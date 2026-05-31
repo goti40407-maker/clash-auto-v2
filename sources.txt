@@ -1,0 +1,1 @@
+https://raw.githubusercontent.com/example1/clash/main/clash.yaml
