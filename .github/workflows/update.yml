@@ -1,0 +1,36 @@
+name: clash-auto
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */6 * * *"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: install
+        run: pip install pyyaml requests
+
+      - name: run
+        run: |
+          mkdir -p script raw output
+          python script/fetch.py
+          python script/build.py
+
+      - name: commit
+        run: |
+          git config user.name "bot"
+          git config user.email "bot@github.com"
+          git add output/clash.yaml
+          git commit -m "update" || echo "no change"
+          git push
